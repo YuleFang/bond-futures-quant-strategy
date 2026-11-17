@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "strategy_name": "赔率视角30年国债期货择时（XGB/LGB/CAT动态集成）",
+    "symbol": "TL.CFE",
+    "start": "2024-05-15",
+    "end": "2025-05-14",
+    "initial_cash": 1000000.0,
+    "window_start_value": 1000000.0,
+    "final_value": 1055946.74,
+    "market": null,
+    "generated_at": "2026-11-11T22:23:39+08:00"
+  },
+  "summary": {
+    "total_return_pct": 5.5946739999999995,
+    "annual_return_pct": 5.711101221297454,
+    "max_drawdown_pct": 3.106756169824232,
+    "sharpe": 1.4774021153366745,
+    "win_rate_pct": 85.71428571428571,
+    "total_trades": 7
+  }
+}
