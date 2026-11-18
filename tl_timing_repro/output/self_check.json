@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "item": "无未来函数（因子扰动测试）",
+      "passed": true,
+      "detail": "max_abs_diff=0.000e+00, probe=2024-09-25, rows=348"
+    },
+    {
+      "item": "成本参数与配置一致（零成本口径）",
+      "passed": true,
+      "detail": "{\"commission\": 0.0, \"slippage\": 0.0, \"impact\": 0.0}"
+    },
+    {
+      "item": "核心依赖可导入",
+      "passed": true,
+      "detail": "全部可用"
+    },
+    {
+      "item": "模型/统计后端状态（信息项，不阻断）",
+      "passed": true,
+      "detail": "全部可用"
+    },
+    {
+      "item": "Wind 缓存文件完整",
+      "passed": true,
+      "detail": "全部存在"
+    }
+  ],
+  "all_passed": true
+}

@@ -1,0 +1,38 @@
+{
+  "main_model": "xgboost",
+  "by_model": {
+    "xgboost": {
+      "precision": 0.4810126582278481,
+      "recall": 0.6551724137931034,
+      "f1": 0.5547445255474452,
+      "n_samples": 238,
+      "n_positive_true": 116,
+      "n_positive_pred": 158
+    },
+    "lightgbm": {
+      "precision": 0.47058823529411764,
+      "recall": 0.6206896551724138,
+      "f1": 0.5353159851301115,
+      "n_samples": 238,
+      "n_positive_true": 116,
+      "n_positive_pred": 153
+    },
+    "catboost": {
+      "precision": 0.5153846153846153,
+      "recall": 0.5775862068965517,
+      "f1": 0.5447154471544715,
+      "n_samples": 238,
+      "n_positive_true": 116,
+      "n_positive_pred": 130
+    },
+    "ensemble": {
+      "precision": 0.49324324324324326,
+      "recall": 0.6293103448275862,
+      "f1": 0.553030303030303,
+      "n_samples": 238,
+      "n_positive_true": 116,
+      "n_positive_pred": 148
+    }
+  },
+  "definition": "类别 1+2 合并为做多信号后的 precision/recall/F1"
+}

@@ -1,0 +1,347 @@
+{
+  "scipy_available": true,
+  "statsmodels_available": true,
+  "fallback_note": "",
+  "n_input_columns": 36,
+  "dropped_by_missing": [],
+  "dropped_by_ks": [
+    "vol_5",
+    "vol_10",
+    "vol_20",
+    "amplitude",
+    "range_mean_5",
+    "log_volume",
+    "S5914515",
+    "S0114089",
+    "log_S5914515"
+  ],
+  "n_retained_columns": 27,
+  "fill_strategy_counts": {
+    "mean": 7,
+    "median": 28,
+    "knn": 1
+  },
+  "boxcox_columns": [
+    "vol_5",
+    "vol_10",
+    "vol_20",
+    "rsi_14",
+    "amplitude",
+    "range_mean_5",
+    "log_volume",
+    "M1006337",
+    "M0041652",
+    "S5914515",
+    "S0114089",
+    "log_M1006337",
+    "log_S5914515"
+  ],
+  "differenced_columns": [
+    "ret_10",
+    "ret_20",
+    "vol_5",
+    "vol_10",
+    "vol_20",
+    "rsi_14",
+    "amplitude",
+    "range_mean_5",
+    "log_volume",
+    "S5914515",
+    "S0114089",
+    "S5914515_chg_5",
+    "S0114089_chg_5",
+    "M0041652_chg_20",
+    "S5914515_chg_20",
+    "log_S5914515"
+  ],
+  "ks_report": {
+    "ret_1": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2485,
+        "2024": 0.1179
+      }
+    },
+    "ret_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.8098,
+        "2024": 0.6398
+      }
+    },
+    "ret_10": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.6026,
+        "2024": 0.406
+      }
+    },
+    "ret_20": {
+      "passed_years": 1,
+      "required": 1,
+      "detail": {
+        "2023": 0.0747,
+        "2024": 0.0228
+      }
+    },
+    "vol_5": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0041,
+        "2024": 0.0004
+      }
+    },
+    "vol_10": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "vol_20": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "ma_bias_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.5244,
+        "2024": 0.3326
+      }
+    },
+    "ma_bias_10": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.936,
+        "2024": 0.8314
+      }
+    },
+    "ma_bias_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2468,
+        "2024": 0.1169
+      }
+    },
+    "rsi_14": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.7612,
+        "2024": 0.5784
+      }
+    },
+    "amplitude": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0059,
+        "2024": 0.0007
+      }
+    },
+    "range_mean_5": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "close_position": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.9668,
+        "2024": 0.8943
+      }
+    },
+    "gap": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.8121,
+        "2024": 0.6428
+      }
+    },
+    "log_volume": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "volume_chg_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.9944,
+        "2024": 0.9708
+      }
+    },
+    "momentum_accel": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.5442,
+        "2024": 0.3508
+      }
+    },
+    "skew_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2418,
+        "2024": 0.1136
+      }
+    },
+    "volume_ma_bias_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.996,
+        "2024": 0.9771
+      }
+    },
+    "M1006337": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2672,
+        "2024": 0.1302
+      }
+    },
+    "M0041652": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.3077,
+        "2024": 0.1581
+      }
+    },
+    "S5914515": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0052,
+        "2024": 0.0006
+      }
+    },
+    "S0114089": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "M1006337_chg_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.3386,
+        "2024": 0.1804
+      }
+    },
+    "M0041652_chg_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.3165,
+        "2024": 0.1643
+      }
+    },
+    "S5914515_chg_5": {
+      "passed_years": 1,
+      "required": 1,
+      "detail": {
+        "2023": 0.0683,
+        "2024": 0.0202
+      }
+    },
+    "S0114089_chg_5": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.9057,
+        "2024": 0.7788
+      }
+    },
+    "M1006337_chg_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.8162,
+        "2024": 0.6471
+      }
+    },
+    "M0041652_chg_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.3837,
+        "2024": 0.2145
+      }
+    },
+    "S5914515_chg_20": {
+      "passed_years": 1,
+      "required": 1,
+      "detail": {
+        "2023": 0.1292,
+        "2024": 0.0483
+      }
+    },
+    "S0114089_chg_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.277,
+        "2024": 0.1368
+      }
+    },
+    "dr007_r001_spread": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2905,
+        "2024": 0.1463
+      }
+    },
+    "dr007_ma_bias_20": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2074,
+        "2024": 0.0921
+      }
+    },
+    "log_M1006337": {
+      "passed_years": 2,
+      "required": 1,
+      "detail": {
+        "2023": 0.2672,
+        "2024": 0.1302
+      }
+    },
+    "log_S5914515": {
+      "passed_years": 0,
+      "required": 1,
+      "detail": {
+        "2023": 0.0052,
+        "2024": 0.0006
+      }
+    }
+  }
+}

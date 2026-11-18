@@ -1,0 +1,36 @@
+{
+  "folds": [
+    {
+      "year": 2024,
+      "n_train": 106,
+      "n_test": 158,
+      "note": "按年滚动重训",
+      "weights": {
+        "xgboost": 0.3300320524363453,
+        "lightgbm": 0.3370907912269961,
+        "catboost": 0.3328771563366586
+      },
+      "model_notes": {
+        "xgboost": "early_stopping",
+        "lightgbm": "early_stopping",
+        "catboost": "early_stopping"
+      }
+    },
+    {
+      "year": 2025,
+      "n_train": 190,
+      "n_test": 80,
+      "note": "按年滚动重训",
+      "weights": {
+        "xgboost": 0.3333458478706946,
+        "lightgbm": 0.330454989740237,
+        "catboost": 0.33619916238906833
+      },
+      "model_notes": {
+        "xgboost": "early_stopping",
+        "lightgbm": "early_stopping",
+        "catboost": "early_stopping"
+      }
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+# 赔率视角下的30年国债择时模型 —— 方法学复现配置
+# 所有取值均来自 2026-11-17 与用户逐题确认的结果；与原文不一致处见 README 偏离登记。
+
+project:
+  name: tl_timing_repro
+  paper: "赔率视角下的30年国债择时模型 (浙商固收 覃汉/章恒豪, 2025-06-20)"
+  mode: methodology_reproduction   # 方法学复现，不追求数值对齐
+  seed: 42
+
+data:
+  cache_dir: data
+  wind_only: true
+  segment_split: "2023-04-21"      # TL 上市日
+  segment_a:
+    code: T.CFE
+    confirmed_start: "2015-05-14"  # 用户确认的训练起点
+    cache_start: "2022-01-04"      # 实际缓存起点（接口返回量限制，偏离已登记）
+    end: "2023-04-20"
+    file: prices_T.csv
+  segment_b:
+    code: TL.CFE
+    start: "2023-04-21"
+    end: "2025-05-14"
+    file: prices_TL.csv
+  oos_start: "2024-05-14"
+  oos_end: "2025-05-14"
+  edb:
+    M1006337: {name: "DR007", freq: daily,   file: edb_M1006337.csv, unit: "%"}
+    M0041652: {name: "R001(银行间质押式回购加权利率:1天)", freq: daily, file: edb_M0041652.csv, unit: "%"}
+    S5914515: {name: "中国:水泥价格指数", freq: daily,   file: edb_S5914515.csv, unit: "点"}
+    S0114089: {name: "SCFI:综合指数", freq: weekly,  file: edb_S0114089.csv, unit: "点"}
+
+label:
+  horizon: 5                       # r_t = close[t+5]/close[t] - 1
+  quantile: expanding              # 扩展窗口分位数，仅使用 t 之前已完全实现的样本
+  min_history: 60                  # 原文未给；因段 B 缓存训练期仅约 1 年，取 60（偏离已登记）
+  # 利率下行 <-> 期货上涨：原文利率变动的低分位映射到期货收益的高分位
+  # r 分位 >0.80 -> 2 大幅下行；0.60~0.80 -> 1 小幅下行；<0.60 -> 0（上行样本并入 0）
+  q_small_down: 0.60
+  q_large_down: 0.80
+  upsample: true                   # 训练集对类别 1/2 随机复制至类别平衡
+
+factors:
+  # 只实现可显式写出的公式，不构造原文未定义的非线性交叉项
+  price_windows: [1, 5, 10, 20]
+  vol_windows: [5, 10, 20]
+  ma_windows: [5, 10, 20]
+  rsi_window: 14
+  edb_chg_windows: [5, 20]
+  log_transform: [M1006337, S5914515]   # 原文提及的对数变换
+
+preprocess:
+  missing_col_threshold: 0.15     # 按全样本弃列
+  mad_n: 3                        # MAD 中位数法，分年度处理
+  normality_alpha: 0.05           # Shapiro-Wilk
+  knn_k: 5
+  boxcox: auto                    # scipy 自动估 lambda（仅正值列）
+  stationarity: adf_kpss          # ADF/KPSS 判定后一阶/季节差分
+  seasonal_period: 5
+  rolling_window_daily: 244       # 日/周频滚动稳健标准化窗口（交易日）
+  rolling_window_monthly: 36
+  ks_alpha: 0.05
+  ks_years_required_ratio: 0.5    # 原文「15年中7年」按实际 9 年样本期折算
+
+model:
+  models: [xgboost, lightgbm, catboost]
+  primary: xgboost
+  ensemble_weight: f1_train        # 各模型在训练集上「类别1+2合并」的 F1 作为权重
+  validation_frac: 0.20
+  early_stopping_rounds: 20
+  n_estimators: 200
+  default_hyperparams: true       # 库默认超参，不做贝叶斯搜索
+  bayes_search: false
+
+walk_forward:
+  enabled: true
+  min_train_years: 2              # 从第 3 年起逐年滚动重训，生成 OOF 预测
+
+backtest:
+  entry: same_day_close           # 已知轻微前视偏差，已登记
+  exit: close
+  holding_days: 5
+  reset_on_new_signal: true       # 再现买点重置持有期，不加仓
+  add_on_signal: false
+  position: 1.0                   # 100% 名义仓位
+  long_only: true
+  leverage: false
+  margin: false
+  costs:
+    commission: 0.0
+    slippage: 0.0
+    impact: 0.0
+  benchmark: buy_and_hold_TL
+
+metrics:
+  rf: 0.0
+  annual_factor: 252
+  win_rate_denominator: closed_trades
+
+paper_reference:                  # 原文数值，仅用于差异表，不作为目标
+  precision_12: 0.5942
+  recall_12: 0.8146
+  f1_12: 0.6872
+  annual_return: 0.1258
+  sharpe: 1.54
+  max_drawdown: 0.0695
+  win_rate: 0.6723
+  holding_days: 5
+
+sensitivity:
+  holding_days: [3, 5, 10]
+  mad_n: [2, 3, 5]
+  rolling_window_daily: [120, 244, 500]
+  seeds: [42, 7, 2024]

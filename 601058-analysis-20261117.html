@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赛轮轮胎(601058) 日内做T策略研究方案 | 星辰 · 2026-11-17</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0f0f23;--card:#1a1a2e;--card2:#20203a;--bd:#2d2d44;
+--t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;
+--green:#00d4aa;--red:#ff4757;--amber:#ffa502;--purple:#667eea;--purple2:#764ba2;
+--cyan:#38bdf8;
+}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;padding:0 0 60px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+a{color:var(--cyan)}
+/* header */
+.hero{background:linear-gradient(135deg,#1a1a3e 0%,#241a45 45%,#0f0f23 100%);border-bottom:1px solid var(--bd);padding:38px 0 30px;margin-bottom:26px}
+.hero-in{max-width:1240px;margin:0 auto;padding:0 20px}
+.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+h1{font-size:29px;line-height:1.35;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+h1 .code{color:var(--cyan);font-weight:600}
+.sub{color:var(--t2);font-size:14px;max-width:860px}
+.disclaimer-top{margin-top:16px;display:inline-block;background:rgba(255,165,2,.10);border:1px solid rgba(255,165,2,.35);color:#ffc766;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+/* cards */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.card.tight{padding:16px 18px}
+.card.accent{background:linear-gradient(135deg,rgba(102,126,234,.14),rgba(118,75,162,.08));border-color:rgba(102,126,234,.45)}
+.card.warn{background:linear-gradient(135deg,rgba(255,71,87,.10),rgba(255,71,87,.03));border-color:rgba(255,71,87,.38)}
+.card.ok{background:linear-gradient(135deg,rgba(0,212,170,.10),rgba(0,212,170,.02));border-color:rgba(0,212,170,.35)}
+/* section */
+section{margin-top:34px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.sec-num{width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:linear-gradient(135deg,var(--purple),var(--purple2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
+h2{font-size:20px;font-weight:750;letter-spacing:-.3px}
+.sec-note{color:var(--t3);font-size:12.5px;margin-left:auto}
+h3{font-size:15px;font-weight:700;margin:0 0 12px;color:var(--t1);display:flex;align-items:center;gap:8px}
+h3::before{content:"";width:3px;height:15px;border-radius:2px;background:linear-gradient(var(--purple),var(--purple2))}
+h4{font-size:13px;font-weight:700;color:var(--cyan);margin:16px 0 8px;letter-spacing:.3px}
+p{font-size:13.5px;color:var(--t2);margin-bottom:10px}
+p strong,li strong{color:var(--t1);font-weight:700}
+ul{margin:6px 0 10px 18px}li{font-size:13.5px;color:var(--t2);margin-bottom:6px}
+/* metrics */
+.metric{background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.metric .lbl{font-size:11.5px;color:var(--t3);letter-spacing:.5px;margin-bottom:7px}
+.metric .val{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1.15}
+.metric .unit{font-size:13px;font-weight:600;color:var(--t2);margin-left:3px}
+.metric .foot{font-size:11.5px;color:var(--t3);margin-top:6px}
+.v-green{color:var(--green)}.v-red{color:var(--red)}.v-amber{color:var(--amber)}.v-cyan{color:var(--cyan)}.v-purple{color:#a78bfa}
+/* table */
+.tw{overflow-x:auto;margin:10px 0 4px}
+table{width:100%;border-collapse:collapse;font-size:12.8px;min-width:560px}
+th{background:#23233f;color:var(--t2);text-align:left;padding:10px 12px;font-weight:650;font-size:11.5px;letter-spacing:.4px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid rgba(45,45,68,.7);color:var(--t2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(102,126,234,.055)}
+td.k{color:var(--t1);font-weight:600;white-space:nowrap}
+td.num{font-variant-numeric:tabular-nums;color:var(--t1)}
+/* tags */
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.t-ok{background:rgba(0,212,170,.15);color:var(--green);border:1px solid rgba(0,212,170,.3)}
+.t-no{background:rgba(255,71,87,.14);color:#ff7a86;border:1px solid rgba(255,71,87,.3)}
+.t-mid{background:rgba(255,165,2,.14);color:#ffc766;border:1px solid rgba(255,165,2,.3)}
+.t-info{background:rgba(56,189,248,.13);color:var(--cyan);border:1px solid rgba(56,189,248,.28)}
+.t-pp{background:rgba(167,139,250,.14);color:#c4b5fd;border:1px solid rgba(167,139,250,.3)}
+/* callout */
+.callout{border-left:3px solid var(--cyan);background:rgba(56,189,248,.055);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.2px;color:var(--t2)}
+.callout.red{border-color:var(--red);background:rgba(255,71,87,.06)}
+.callout.green{border-color:var(--green);background:rgba(0,212,170,.055)}
+.callout.amber{border-color:var(--amber);background:rgba(255,165,2,.06)}
+.callout b{color:var(--t1)}
+/* chart */
+.chart{width:100%;height:290px;margin-top:6px}
+.chart-fallback{display:none;color:var(--t3);font-size:12.5px;padding:24px;text-align:center;border:1px dashed var(--bd);border-radius:8px;margin-top:8px}
+/* misc */
+.kv{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px dashed rgba(45,45,68,.8);font-size:13px}
+.kv:last-child{border:none}
+.kv .k{color:var(--t2)}.kv .v{color:var(--t1);font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:7px 11px;font-size:12px;color:var(--t2)}
+.pill b{color:var(--t1)}
+.foot{margin-top:38px;padding-top:20px;border-top:1px solid var(--bd);color:var(--t3);font-size:12px}
+.foot p{font-size:12px;color:var(--t3);margin-bottom:6px}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.2px;background:#15152b;border:1px solid var(--bd);border-radius:7px;padding:10px 12px;color:#c7d2fe;overflow-x:auto;white-space:pre;margin:8px 0}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.flow .step{background:var(--card2);border:1px solid var(--bd);border-radius:9px;padding:9px 13px;font-size:12.5px;color:var(--t1);font-weight:600}
+.flow .arw{color:var(--purple);font-weight:800}
+@media(max-width:640px){h1{font-size:22px}.hero{padding:26px 0}.chart{height:250px}.sec-note{display:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+ <div class="hero-in">
+  <div class="eyebrow">STELLAR / STRATEGY RESEARCH NOTE</div>
+  <h1>赛轮轮胎 <span class="code">601058.SH</span> · 日内做 T 策略研究方案</h1>
+  <p class="sub">基于万得金融数据的「数据口径 → 实测特征 → 规则设计 → 回测评估」四层研究框架。所有触发阈值由实测波动分布与交易成本反推，而非经验常数。本文为策略研究设计文档，<strong>尚未执行回测</strong>，所有参数均为待检验假设。</p>
+  <div class="disclaimer-top">⚠ 仅用于策略研究 · 不构成任何投资建议 · 股市有风险</div>
+ </div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ 0 参数确认 ============ -->
+<section style="margin-top:0">
+ <div class="sec-head"><div class="sec-num">0</div><h2>参数确认与研究边界</h2><div class="sec-note">按用户要求先行确认，已获答复</div></div>
+ <div class="grid g4">
+  <div class="metric"><div class="lbl">底仓模式</div><div class="val" style="font-size:19px">有底仓 · 双向做 T</div><div class="foot">正向 T（先买后卖）+ 反向 T（先卖后买），日内等量回转</div></div>
+  <div class="metric"><div class="lbl">资金规模</div><div class="val">≤ 50<span class="unit">万元</span></div><div class="foot">冲击成本可忽略档，滑点按 1–2 tick 建模</div></div>
+  <div class="metric"><div class="lbl">风险偏好</div><div class="val" style="font-size:22px">均衡</div><div class="foot">中等换手 · 信号确认后入场 · 回撤与机会兼顾</div></div>
+  <div class="metric"><div class="lbl">数据方式</div><div class="val" style="font-size:19px">由分析师择定</div><div class="foot">日K + 5min + 快照 + 指数 + 公告新闻，交叉验证</div></div>
+ </div>
+ <div class="card" style="margin-top:16px">
+  <h3>持仓限制：研究默认假设（用户未在选项中覆盖，按此执行）</h3>
+  <div class="grid g3">
+   <div><div class="kv"><span class="k">单票占用上限</span><span class="v">≤ 总资金 30%（≤ 15 万元）</span></div><div class="kv"><span class="k">杠杆 / 融资融券</span><span class="v">不使用</span></div></div>
+   <div><div class="kv"><span class="k">单日回转次数</span><span class="v">≤ 4 次（均衡档常态 2 次）</span></div><div class="kv"><span class="k">收盘净敞口</span><span class="v">必须为 0（持仓 = 底仓）</span></div></div>
+   <div><div class="kv"><span class="k">账本口径</span><span class="v">底仓 / T 仓分账独立核算</span></div><div class="kv"><span class="k">T+1</span><span class="v">当日买入不可当日卖出，卖出限用隔夜底仓</span></div></div>
+  </div>
+  <div class="callout amber"><b>待后续确认项（不影响方案框架，但影响回测账本）：</b>底仓具体股数与成本价、券商实际佣金费率、是否允许融券、做 T 盈亏是否摊薄底仓成本价。这些在回测实现时需参数化。</div>
+ </div>
+</section>
+
+<!-- ============ 1 数据规格 ============ -->
+<section>
+ <div class="sec-head"><div class="sec-num">1</div><h2>所需数据字段与时间粒度</h2><div class="sec-note">Wind 金融数据接口 · 数据截止 2026-11-16 收盘</div></div>
+ <div class="card">
+  <h3>数据清单、粒度与用途</h3>
+  <div class="tw"><table>
+   <thead><tr><th>数据类别</th><th>必需字段</th><th>时间粒度</th><th>策略用途</th><th>本次可得性</th></tr></thead>
+   <tbody>
+    <tr><td class="k">标的静态档案</td><td>代码/简称、上市板、行业、ST 状态、总/流通股本、最小变动价位、涨跌停价</td><td>静态 / 日更</td><td>合规过滤、价格取整、仓位上限换算</td><td><span class="tag t-mid">部分</span> 快照含涨跌停价与市值；档案接口本次返回「没找到数据」，需复核</td></tr>
+    <tr><td class="k">日频量价</td><td>开/高/低/收、VWAP 均价、成交量、成交额、换手率、振幅、复权因子</td><td>日（1 条/交易日）</td><td>波动与流动性分布、振幅分层、参数标定、事件日标注</td><td><span class="tag t-ok">已取</span> 243 个交易日（2025-11-17 ~ 2026-11-16）</td></tr>
+    <tr><td class="k">分钟量价（核心）</td><td>5min 开/高/低/收、成交量、成交额、均价、换手率</td><td>5 分钟（48 根/日）</td><td>日内 VWAP 锚、滚动 σ、量能比、时段规律、信号生成与撮合</td><td><span class="tag t-mid">样本 10 日</span> 11-03~11-16 共 480 根；正式回测需补齐全样本约 11,664 根</td></tr>
+    <tr><td class="k">更细粒度（可选）</td><td>1min 开高低收、成交量、成交额、均价</td><td>1 分钟（240 根/日）</td><td>精细化撮合、信号滞后检验、滑点校准</td><td><span class="tag t-info">可取未取</span> 接口 <code>get_stock_quote</code> 可用</td></tr>
+    <tr><td class="k">盘口 / 委托</td><td>买一~买五、卖一~卖五 价与量、委比、逐笔成交</td><td>快照 / 逐笔</td><td>买卖价差、盘口深度、成交概率、冲击成本</td><td><span class="tag t-no">受限</span> 仅收盘时点快照（15:30）；<b>Level2 逐笔/十档不可得</b></td></tr>
+    <tr><td class="k">行情快照</td><td>最新价、前收、开/高/低、涨跌幅、量比、振幅、换手率、五档、市值、PE、股息率、MA5/10/20、BOLL 上下轨</td><td>时点</td><td>成本基准价、spread、趋势与波动状态、价格锚</td><td><span class="tag t-ok">已取</span> 2026-11-16 快照</td></tr>
+    <tr><td class="k">市场指数</td><td>上证指数 / 沪深300 日频与 1min 点位、成交额</td><td>日 + 1 分钟</td><td>大盘环境过滤、系统性风险修正</td><td><span class="tag t-ok">已取</span> 上证日频 21 日</td></tr>
+    <tr><td class="k">事件日历</td><td>财报/业绩预告/快报、分红除权除息日、股东会、增减持、重大合同、贸易政策裁决</td><td>事件日（point-in-time）</td><td><b>禁用窗口</b>，防跳空与规则性失真</td><td><span class="tag t-mid">样本</span> 公告 8 条 + 新闻 8 条，需全量补齐</td></tr>
+    <tr><td class="k">公司行动</td><td>除权除息日、每股分红、股本变动、停复牌</td><td>事件日</td><td>价格连续性、复权处理、停牌日剔除</td><td><span class="tag t-mid">部分</span> 公告含 2026 半年度每股 0.15 元分红</td></tr>
+    <tr><td class="k">交易成本参数</td><td>佣金、最低佣金、印花税、过户费、经手费/证管费</td><td>参数（非时序）</td><td>净收益核算与盈亏平衡成本测算</td><td><span class="tag t-mid">假设</span> 见第 3.7 节，须按券商与最新法规核对</td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout red"><b>数据可信度边界（诚实标注）：</b>① 分钟级样本仅 10 个交易日，时段规律与 σ 估计<b>置信度中等</b>；② 无 Level2 逐笔/十档，滑点、成交概率、盘口冲击只能近似，实盘前必须用券商数据校准；③ 盘口快照为盘后时点，不代表盘中深度；④ 公告/新闻为检索样本而非完整事件日历，正式回测需 point-in-time 全量补齐；⑤ 因万得套餐 QPS 限流，本次采用串行低频取数，未取 1min 与十档全量数据。</div>
+ </div>
+</section>
+
+<!-- ============ 2 实测特征 ============ -->
+<section>
+ <div class="sec-head"><div class="sec-num">2</div><h2>实测特征：波动 / 流动性 / 交易时段 / 环境</h2><div class="sec-note">数据驱动，样本口径随项标注</div></div>
+
+ <div class="grid g4">
+  <div class="metric"><div class="lbl">最新价（11-16 收盘）</div><div class="val">12.32<span class="unit">元</span></div><div class="foot">+0.57% · 振幅 2.29% · 量比 0.762</div></div>
+  <div class="metric"><div class="lbl">近 21 日日均振幅</div><div class="val v-cyan">3.338<span class="unit">%</span></div><div class="foot">中位 3.215% · 区间 1.626%–5.717%</div></div>
+  <div class="metric"><div class="lbl">近 21 日日均成交额</div><div class="val v-purple">5.616<span class="unit">亿</span></div><div class="foot">中位 5.047 亿 · 峰值 12.602 亿</div></div>
+  <div class="metric"><div class="lbl">往返交易成本（基准）</div><div class="val v-amber">0.197<span class="unit">%</span></div><div class="foot">显性 0.116% + 跨 1 tick 0.081%</div></div>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h3>2.1 波动特征 · 日间与日内双层</h3>
+  <div class="grid g2">
+   <div>
+    <p><strong>全年（243 交易日）：</strong>收盘价自 15.34 元下行至 12.32 元（约 −19.7%），区间最高 17.60 元（2025-12-12）、最低 11.10 元（2026-06-22）；52 周高 17.599 / 低 11.003。全年经历上涨、单边下跌、放量反弹、缩量整理四种状态，<strong>适合作分层回测样本</strong>。</p>
+    <p><strong>近 21 日振幅分位数：</strong>P25 = 2.672%、中位 = 3.215%、均值 = 3.338%、P75 = 3.880%、P90 = 4.807%。振幅与成交额明显正相关：<strong>放量日振幅大、缩量日振幅小</strong>，因此可用量能比作为波动的代理变量做动态阈值。</p>
+    <p><strong>做 T 空间上界：</strong>日振幅 3.338% 是「全天高低差」的理论上限，日内回转实际可捕获通常仅 1/4–1/3，即 <strong>0.8%–1.1% 毛利</strong>，扣成本后约 0.6%–0.9%/日为理想上界。<span class="tag t-mid">防过拟合标尺</span> 回测净收益若显著超过此区间，应优先怀疑未来函数或过拟合。</p>
+   </div>
+   <div><div id="chart-amp" class="chart"></div><div class="chart-fallback" data-fb="chart-amp">图表需联网加载 ECharts；数据见下方表格与正文。</div></div>
+  </div>
+  <div class="tw"><table>
+   <thead><tr><th>维度</th><th>均值</th><th>中位数</th><th>P25</th><th>P75</th><th>P90</th><th>最小</th><th>最大</th></tr></thead>
+   <tbody>
+    <tr><td class="k">日振幅 (H−L)/均价，%</td><td class="num">3.338</td><td class="num">3.215</td><td class="num">2.672</td><td class="num">3.880</td><td class="num">4.807</td><td class="num">1.626</td><td class="num">5.717</td></tr>
+    <tr><td class="k">日成交额，亿元</td><td class="num">5.616</td><td class="num">5.047</td><td class="num">3.780</td><td class="num">6.537</td><td class="num">9.079</td><td class="num">2.747</td><td class="num">12.602</td></tr>
+    <tr><td class="k">换手率，%</td><td class="num">1.415</td><td class="num">1.260</td><td class="num">0.938</td><td class="num">1.659</td><td class="num">2.430</td><td class="num">0.661</td><td class="num">3.020</td></tr>
+   </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--t3);margin-top:8px">样本：2026-10-19 ~ 2026-11-16，21 个交易日；振幅以当日 (最高−最低)/均价 计算。</p>
+ </div>
+
+ <div class="card">
+  <h3>2.2 流动性 · 容量与成本可承受度</h3>
+  <div class="grid g2">
+   <div>
+    <div class="kv"><span class="k">流通市值 / 总市值</span><span class="v">405.09 亿元 / 405.09 亿元</span></div>
+    <div class="kv"><span class="k">PE(TTM) / 股息率</span><span class="v">12.046 倍 / 2.68%</span></div>
+    <div class="kv"><span class="k">买卖价差（快照）</span><span class="v">12.31 / 12.32 → 1 tick = 0.01 元 = 0.0812%</span></div>
+    <div class="kv"><span class="k">买一 / 卖一挂量</span><span class="v">13,900 股（≈17.1 万元）/ 8,400 股（≈10.3 万元）</span></div>
+    <div class="kv"><span class="k">涨跌停价（±10%）</span><span class="v">13.48 / 11.03 元</span></div>
+    <div class="kv"><span class="k">均线 / 布林（11-16）</span><span class="v">MA5 12.304 · MA10 12.310 · MA20 12.077 · BOLL 11.407~12.950</span></div>
+   </div>
+   <div>
+    <p><strong>容量测算：</strong>50 万元资金、单票上限 30% → 底仓 ≤ 15 万元（约 12,000 股 @12.32）。T 仓额度设为底仓 × 25% ≈ 3.75 万元，分 2 笔每笔 ≤ 1.9 万元（约 1,500 股）。相对日均成交额 5.616 亿元，单笔占比约 <strong>0.03%</strong>，冲击成本可忽略。</p>
+    <p><strong>但需动态参与率约束：</strong>5min 平均成交额约 1,170 万元，午后低谷可降至 200 万元量级；此时 1.9 万元占 0.95%，接近 1% 的经验阈值。故设「单笔 ≤ 近 5 根 5min 平均成交额 × 1%」为硬上限。</p>
+    <p><strong>均线状态：</strong>价格 12.32 略高于 MA5/MA10（12.30 附近粘合），MA20 位于下方 12.077，BOLL 带 11.41–12.95；短期无强趋势，<strong>均值回归型做 T 的适配度高于趋势型策略</strong>。</p>
+   </div>
+  </div>
+ </div>
+
+ <div class="card accent">
+  <h3>2.3 交易时段规律 · 本案最关键的实证发现</h3>
+  <div class="grid g2">
+   <div><div id="chart-seg" class="chart"></div><div class="chart-fallback" data-fb="chart-seg">图表需联网加载 ECharts；数据见下表。</div></div>
+   <div><div id="chart-sigma" class="chart"></div><div class="chart-fallback" data-fb="chart-sigma">图表需联网加载 ECharts；数据见下表。</div></div>
+  </div>
+  <div class="tw"><table>
+   <thead><tr><th>时段</th><th>11-16 成交额占比</th><th>5min 收益率 σ（11-16）</th><th>波动 / 往返成本</th><th>做 T 可行性</th></tr></thead>
+   <tbody>
+    <tr><td class="k">09:30–10:00</td><td class="num">42.60%</td><td class="num">0.4532%（开盘前 6 根）</td><td class="num">2.30 ×</td><td><span class="tag t-ok">可行，但滑点最大</span></td></tr>
+    <tr><td class="k">10:00–11:30</td><td class="num">26.47%</td><td class="num">0.1454%</td><td class="num">0.74 ×</td><td><span class="tag t-no">默认不可行</span></td></tr>
+    <tr><td class="k">13:00–14:30</td><td class="num">18.86%</td><td class="num">0.1244%</td><td class="num">0.63 ×</td><td><span class="tag t-no">默认不可行</span></td></tr>
+    <tr><td class="k">14:30–15:00</td><td class="num">12.06%</td><td class="num">0.1118%</td><td class="num">0.57 ×</td><td><span class="tag t-mid">仅用于平回</span></td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout red"><b>核心结论：</b>流动性呈 U 型（开盘集中、午后枯竭、尾盘小幅回升）——10 日样本中 <b>09:35 单根 5min K 线平均占全天成交额 14.06%</b>（7.85%–27.17%），11-16 前 30 分钟独占 42.60%。同时波动率从开盘 0.453% 单调衰减到午后 0.124%，<b>仅为基准往返成本 0.197% 的 0.6 倍</b>。也就是说：<b>午后绝大多数 5 分钟窗口的波动根本覆盖不了交易成本</b>，在此高频做 T 是结构性亏损。策略必须做时段过滤，并把「单笔目标价差 ≥ 3 倍成本」设为硬约束。</div>
+  <p style="font-size:12px;color:var(--t3)">σ 口径：2026-11-16 的 48 根 5min 收盘价对数收益的总体标准差，分时段切片；成本口径见 3.7 节基准 0.1969%。该 σ 为单日样本，正式回测须用全样本滚动估计。</p>
+ </div>
+
+ <div class="grid g2">
+  <div class="card">
+   <h3>2.4 大盘环境（前置修正因子）</h3>
+   <div class="kv"><span class="k">上证 10-19 → 11-16</span><span class="v">3730.92 → 3602.57（−3.44%）</span></div>
+   <div class="kv"><span class="k">11-16 单日</span><span class="v">−0.87%，低开 3611.54（−0.63%）</span></div>
+   <div class="kv"><span class="k">两市成交额</span><span class="v">9797 亿（11-05）→ 7062 亿（11-16），缩量</span></div>
+   <div class="kv"><span class="k">个股同期</span><span class="v">12.63 → 12.32（−2.45%），略强于大盘</span></div>
+   <p style="margin-top:10px"><strong>判断：</strong>震荡偏弱、缩量、结构性行情，情绪中性偏谨慎。<strong>大盘弱 + 个股相对抗跌</strong> → 均值回归型日内策略适配度较高，但系统性下跳风险显著，需在大盘急跌日禁用正向 T（低吸）。</p>
+  </div>
+  <div class="card">
+   <h3>2.5 情报面 · 风险与催化</h3>
+   <p><span class="tag t-no">风险</span> <strong>2026Q3 归母净利 5.52 亿，同比 −46.94%、环比 −49.95%</strong>；毛利率 20.98%（环比 −6.11pct）。10-30 三季报 → 11-02 跳空低开 −4.5%（开 11.13 vs 前收 11.66）。</p>
+   <p><span class="tag t-no">风险</span> 原料：Q3 四大原料综合采购价同比 +19.35%；天胶/丁苯年内涨 25%–45%。汇率：2026H1 财务费用 4.57 亿（+429.74%），汇兑损失 2.42 亿。贸易：欧盟双反终裁前披露（10-19），合计税率 27.50%–57.09%，公司 45.3% 为行业最高。</p>
+   <p><span class="tag t-ok">催化</span> 11-01 起 TBR 产品提价 5%–7%（行业 100+ 份涨价函）；前三季度营收 308.85 亿（+11.96%）创同期新高；海外产能爬坡；管理层亲属增持；PE 12 倍处历史低位、股息率 2.68%。</p>
+   <p><span class="tag t-mid">排查结论</span> 未见 ST / 立案调查 / 大额减持等「一票否决」级利空；但<b>事件驱动跳空</b>是首要风险，必须设事件日历禁用窗口。</p>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 3 策略规则 ============ -->
+<section>
+ <div class="sec-head"><div class="sec-num">3</div><h2>策略规则设计</h2><div class="sec-note">有底仓 · 双向 · 日内净敞口归零</div></div>
+
+ <div class="card">
+  <h3>3.1 核心逻辑与信号定义</h3>
+  <p>采用 <strong>VWAP 偏离均值回归 + 量能确认 + 时段/事件过滤</strong>。之所以选均值回归而非趋势跟踪：当前均线粘合（MA5 12.304 / MA10 12.310）、大盘震荡偏弱、日内波动率随时间衰减，趋势型日内策略缺乏延续性；而日内价格围绕 VWAP 的偏离具备可度量的回归倾向。</p>
+  <div class="mono">VWAP_t   = 当日累计成交额 / 当日累计成交量      （5min 累计值，仅用已实现数据，禁止未来函数）
+d_t      = (P_t − VWAP_t) / VWAP_t × 100%         价格偏离度
+σ_t      = std(过去 20 根 5min 收益率)            滚动波动率；开盘用前一日同窗初始化
+r_t      = 当前 5min 成交额 / 过去 20 根 5min 成交额中位数   量能比
+θ_t      = max( 0.60%,  1.5 × σ_t )                开仓阈值；0.60% = 3× 基准往返成本（硬下限）</div>
+  <div class="callout"><b>为何用 max(0.60%, 1.5σ) 而非纯 σ 倍数：</b>午后 σ≈0.12% 时 1.5σ 仅 0.19%，远低于 0.197% 的往返成本；若不加成本下限，模型会在低波动时段被微小噪声反复触发，形成「胜率看似很高、净收益为负」的典型陷阱。成本下限把所有交易强制约束到波动足够的窗口。</div>
+  <div class="flow">
+   <div class="step">数据更新（5min bar 收盘）</div><span class="arw">→</span>
+   <div class="step">时段 / 事件 / 大盘过滤</div><span class="arw">→</span>
+   <div class="step">计算 d, σ, r</div><span class="arw">→</span>
+   <div class="step">触发判定</div><span class="arw">→</span>
+   <div class="step">下一根 bar 撮合</div><span class="arw">→</span>
+   <div class="step">止盈 / 止损 / 时间平回</div><span class="arw">→</span>
+   <div class="step">15:00 校验净敞口 = 0</div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>3.2 交易窗口（由 2.3 节实测反推）</h3>
+  <div class="tw"><table>
+   <thead><tr><th>时段</th><th>状态</th><th>规则与依据</th></tr></thead>
+   <tbody>
+    <tr><td class="k">09:30–09:45</td><td><span class="tag t-no">禁止开仓</span></td><td>价格发现期，价差与波动最大、滑点不可控；仅用于累计 VWAP 与初始化 σ</td></tr>
+    <tr><td class="k">09:45–10:30</td><td><span class="tag t-ok">主窗口 A</span></td><td>波动仍充足（σ 约 0.30%–0.45%），波动/成本 ≥ 1.5×；承担当日主要交易</td></tr>
+    <tr><td class="k">10:30–11:30</td><td><span class="tag t-mid">条件解锁</span></td><td>默认停用；仅当 r_t ≥ 2.0 <b>且</b> 当根 5min 振幅 ≥ 0.50% 时解锁单笔</td></tr>
+    <tr><td class="k">13:00–14:30</td><td><span class="tag t-mid">条件解锁</span></td><td>同上。σ≈0.124% &lt; 成本，绝大多数时间应保持空仓</td></tr>
+    <tr><td class="k">14:30–14:50</td><td><span class="tag t-ok">主窗口 B</span></td><td>尾盘量能回升，优先用于平回未了结 T 仓；允许低额度开仓</td></tr>
+    <tr><td class="k">14:50–15:00</td><td><span class="tag t-no">只平不开</span></td><td>收盘集合竞价成交不可控，强制时间平回</td></tr>
+    <tr><td class="k">事件日全天</td><td><span class="tag t-no">全日禁用</span></td><td>财报/业绩预告/分红除权/重大公告/股东会/贸易裁决的<b>前 1 日与当日</b></td></tr>
+   </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--t3)">已识别需标注的事件日示例：2026-04-28（利润分配方案，当日成交额 18.50 亿、换手 3.93%）、2026-05-15（分红股权登记日）、2026-10-19（欧盟双反披露）、2026-10-30（三季报）、2026-11-01（TBR 提价生效）。</p>
+ </div>
+
+ <div class="grid g2">
+  <div class="card ok">
+   <h3>3.3 正向 T（先买后卖 · 低吸高抛）</h3>
+   <h4>开仓（买入 T 仓）</h4>
+   <ul>
+    <li><strong>全部满足：</strong>d_t ≤ −θ_t；r_t ≥ 1.2（放量止跌确认）；P_t &gt; 跌停价 × 1.02；大盘 5min 收益 &gt; −0.30%</li>
+    <li>大盘弱势日（上证日内 &lt; −1% 或低开 &gt; 0.8%）<strong>禁用正向 T</strong>，防系统性下跳接飞刀</li>
+    <li>|d_t| &gt; 1.5% 时禁止开新仓（防追单 / 极端行情）</li>
+   </ul>
+   <h4>加仓</h4>
+   <ul><li>价格继续下行至 d ≤ −(θ_t + 0.30%)、且 r_t ≥ 1.5、且未超当日 T 仓额度 → 加第 2 笔；<strong>单日单方向最多 2 笔</strong></li></ul>
+   <h4>平仓（卖出等量隔夜底仓，T+1 合规）</h4>
+   <ul>
+    <li>回归：d_t ≥ 0；或 <strong>止盈 +0.80%</strong>（达 +0.60% 后启动移动止盈，回吐 0.20% 即平）</li>
+    <li><strong>止损 −0.60%</strong>；或持仓 ≥ 12 根 5min 未达标 → 时间止损</li>
+    <li>14:50 无条件平回；若无法成交，记为策略失效事件并计入执行指标</li>
+   </ul>
+  </div>
+  <div class="card warn">
+   <h3>3.4 反向 T（先卖后买 · 高抛低吸）</h3>
+   <h4>开仓（卖出 T 仓，来源为底仓）</h4>
+   <ul>
+    <li><strong>全部满足：</strong>d_t ≥ +θ_t；出现量能滞涨（r_t ≤ 0.8 或当根 5min 收阴）；底仓可卖余额充足；P_t &lt; 涨停价 × 0.98</li>
+    <li>大盘强势突破日（上证 5min 收益 &gt; +0.5%）禁用反向 T，防丢失底仓筹码</li>
+    <li>|d_t| &gt; 1.5% 时禁止开新仓</li>
+   </ul>
+   <h4>加仓</h4>
+   <ul><li>d ≥ θ_t + 0.30% 且未超额度 → 加第 2 笔；<strong>单日最多 2 笔</strong></li></ul>
+   <h4>平仓（买回等量，恢复底仓）</h4>
+   <ul>
+    <li>回归：d_t ≤ 0；或 <strong>止盈 +0.80%</strong>（含移动止盈）</li>
+    <li><strong>回补止损</strong>：价格继续上行使回补成本较卖出价高出 0.60% → 立即买回，认赔保筹码</li>
+    <li>持仓 ≥ 12 根 5min → 时间止损；14:50 无条件平回</li>
+   </ul>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>3.5 加减仓、止盈止损与仓位控制汇总</h3>
+  <div class="tw"><table>
+   <thead><tr><th>项目</th><th>设定值</th><th>依据 / 说明</th></tr></thead>
+   <tbody>
+    <tr><td class="k">底仓 B</td><td class="num">≤ 15 万元 ≈ 12,000 股</td><td>50 万 × 单票上限 30%；具体股数待用户确认</td></tr>
+    <tr><td class="k">T 仓额度 T_max</td><td class="num">min(底仓 × 25%, 5 万元) ≈ 3.75 万元 ≈ 3,000 股</td><td>保持底仓主体稳定，避免做 T 演变为变相加仓</td></tr>
+    <tr><td class="k">单笔委托上限</td><td class="num">min(T_max / 2, 近 5 根 5min 均额 × 1%, 3 万元)</td><td>参与率约束；100 股整数倍取整</td></tr>
+    <tr><td class="k">分批规则</td><td>首笔 50% 额度，确认后加第 2 笔 50%；单方向最多 2 笔</td><td>避免一次性满额，保留二次机会</td></tr>
+    <tr><td class="k">单笔止盈</td><td class="num">+0.80%（≈4× 基准成本）</td><td>达 +0.60% 后移动止盈，回吐 0.20% 平仓</td></tr>
+    <tr><td class="k">单笔止损</td><td class="num">−0.60%（≈3× 基准成本）</td><td>日内波动尺度；配合 12 根 5min 时间止损</td></tr>
+    <tr><td class="k">日内累计止损</td><td class="num">T 仓净亏损达底仓市值 0.40% → 当日停用</td><td>防连续误判累积</td></tr>
+    <tr><td class="k">单日总风险预算</td><td class="num">≤ 底仓市值 1.2%</td><td>对应「均衡」风险档上限</td></tr>
+    <tr><td class="k">单日回转次数</td><td class="num">常态 2 次，硬上限 4 次</td><td>第 3/4 次需 r_t ≥ 2 且前序交易盈利方可解锁</td></tr>
+    <tr><td class="k">底仓不变约束</td><td><span class="tag t-ok">硬性</span> 15:00 持仓 = 开盘底仓，偏差必须为 0</td><td>「有底仓做 T」的核心风控；违规次数纳入执行指标</td></tr>
+    <tr><td class="k">禁止项</td><td>杠杆/融券、隔夜净敞口、追单、涨跌停附近交易、事件日交易</td><td>—</td></tr>
+   </tbody>
+  </table></div>
+ </div>
+
+ <div class="card">
+  <h3>3.6 买入 / 卖出触发条件速查</h3>
+  <div class="tw"><table>
+   <thead><tr><th>动作</th><th>触发条件（AND）</th><th>成交方式</th><th>退出条件（OR）</th></tr></thead>
+   <tbody>
+    <tr><td class="k"><span class="tag t-ok">正向 T 买入</span></td><td>d ≤ −max(0.60%, 1.5σ) · r ≥ 1.2 · 大盘 5min &gt; −0.30% · 非事件日 · 在主窗口</td><td>下一根 5min 以卖一价主动成交（跨 1 tick）</td><td>d ≥ 0 · 止盈 +0.80% · 止损 −0.60% · 12 根超时 · 14:50 强平</td></tr>
+    <tr><td class="k"><span class="tag t-no">反向 T 卖出</span></td><td>d ≥ +max(0.60%, 1.5σ) · 量能滞涨（r ≤ 0.8 或收阴）· 底仓余额足 · 非事件日 · 在主窗口</td><td>下一根 5min 以买一价主动成交（跨 1 tick）</td><td>d ≤ 0 · 止盈 +0.80% · 回补止损 0.60% · 12 根超时 · 14:50 强平</td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout green"><b>信号归因（设计意图）：</b>价格偏离（VWAP 均值回归）贡献约 45%；量能确认与时段过滤约 30%（本质是波动可得性判断）；成本约束与仓位规则约 20%；大盘/事件过滤约 5%。本策略的胜负手<b>不在预测方向，而在「只在波动足以覆盖成本时出手」</b>。</div>
+ </div>
+
+ <div class="card">
+  <h3>3.7 交易成本与滑点假设</h3>
+  <div class="tw"><table>
+   <thead><tr><th>成本项</th><th>基准假设</th><th>口径说明</th></tr></thead>
+   <tbody>
+    <tr><td class="k">佣金</td><td class="num">双边各 0.025%（万 2.5），单笔最低 5 元</td><td>参数化；按券商实际费率核对</td></tr>
+    <tr><td class="k">印花税</td><td class="num">卖出单边 0.05%</td><td><b>研究假设</b>，须按最新法规核对</td></tr>
+    <tr><td class="k">过户费</td><td class="num">双边各 0.001%</td><td>研究假设</td></tr>
+    <tr><td class="k">经手费 / 证管费</td><td class="num">双边合计约 0.0137%</td><td>研究假设，实务中常含于佣金</td></tr>
+    <tr><td class="k">显性费用往返合计</td><td class="num">0.1157%</td><td>上四项之和</td></tr>
+    <tr><td class="k">买卖价差 / 滑点</td><td class="num">1 tick = 0.01 元 = 0.0812%</td><td>快照实测 12.31/12.32；主动买吃卖一、主动卖砸买一</td></tr>
+    <tr><td class="k">基准往返总成本</td><td class="num v-amber">0.1969%</td><td>显性 + 1 tick；用作全部阈值锚点</td></tr>
+    <tr><td class="k">压力情形</td><td class="num">0.2781%（2 tick）</td><td>稳健性检验用；极端 3 tick = 0.3593%</td></tr>
+    <tr><td class="k">额外冲击成本</td><td class="num">基准 0</td><td>50 万以内 + 单笔 ≤ 3 万元；若参与率 &gt; 1% 则线性追加</td></tr>
+    <tr><td class="k">成交概率</td><td class="num">基准 100%（主动单）</td><td>Level2 不可得，压力测试设 80% / 60%</td></tr>
+    <tr><td class="k">最小目标价差</td><td class="num v-cyan">≥ 0.591%（3× 基准成本）</td><td><b>硬约束</b>：低于此值的信号一律丢弃</td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout amber"><b>成本覆盖校验：</b>开盘段 σ=0.453%，1.5σ=0.68% &gt; 0.591% 下限 → 可行但边际（波动/成本 2.3×）；午后 σ=0.124%，波动/成本 0.63× → <b>结构性不可行</b>。这解释了为什么时段过滤与成本下限是本方案的强制项而非可选项。所有费率均为研究假设，回测引擎须把成本做成可扫描参数。</div>
+ </div>
+</section>
+
+<!-- ============ 4 回测 ============ -->
+<section>
+ <div class="sec-head"><div class="sec-num">4</div><h2>回测与评估方法</h2><div class="sec-note">本方案仅设计框架，未执行回测</div></div>
+
+ <div class="card">
+  <h3>4.1 样本区间与切分</h3>
+  <div class="tw"><table>
+   <thead><tr><th>数据集</th><th>区间</th><th>交易日数</th><th>用途</th></tr></thead>
+   <tbody>
+    <tr><td class="k">全样本</td><td class="num">2025-11-17 ~ 2026-11-16</td><td class="num">243</td><td>覆盖上涨/单边下跌/放量反弹/缩量整理，含除权与三季报事件</td></tr>
+    <tr><td class="k">训练 / 参数标定</td><td class="num">2025-11-17 ~ 2026-06-30</td><td class="num">约 150</td><td>估计 σ 分布、VWAP 偏离分布、时段参数</td></tr>
+    <tr><td class="k">验证 / 参数选择</td><td class="num">2026-07-01 ~ 2026-09-30</td><td class="num">约 65</td><td>网格选参、避免用测试集调参</td></tr>
+    <tr><td class="k">样本外测试 OOS</td><td class="num">2026-10-01 ~ 2026-11-16</td><td class="num">约 30</td><td>含三季报、双反披露、提价生效，专测事件鲁棒性</td></tr>
+    <tr><td class="k">分钟级样本</td><td class="num">2026-11-03 ~ 2026-11-16（本次已取）</td><td class="num">10 日 / 480 根</td><td><span class="tag t-no">待补齐</span> 正式回测须扩展至全样本 243 日 × 48 根 ≈ 11,664 根 5min</td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout red"><b>前置阻塞项：</b>当前分钟级数据仅 10 个交易日，不足以支撑 σ 与时段规律的稳健估计。<b>回测启动前必须先补齐全样本 5min（或 1min）数据</b>，否则结论置信度低，不得据此评估策略优劣。</div>
+ </div>
+
+ <div class="card">
+  <h3>4.2 回测引擎设定</h3>
+  <div class="grid g2">
+   <div><ul>
+    <li><strong>驱动方式：</strong>事件驱动、5min bar 逐根推进；信号在第 t 根收盘生成，第 t+1 根成交，<strong>严禁未来函数</strong></li>
+    <li><strong>VWAP：</strong>只用截至当前 bar 的累计成交额/成交量，禁止用全日 VWAP</li>
+    <li><strong>复权：</strong>日内价格用不复权；跨日收益用前复权衔接；除权除息日整日剔除</li>
+    <li><strong>T+1 显式建模：</strong>当日买入股份标记「不可卖」；卖出指令只能扣减隔夜底仓；正向 T 的平仓在账本上卖的是底仓</li>
+   </ul></div>
+   <div><ul>
+    <li><strong>底仓账本：</strong>期初 B 股，底仓与 T 仓分账；每日 15:00 校验净头寸 = B，违规计数</li>
+    <li><strong>撮合：</strong>主动单按对手价成交（跨 1 tick）；限价单按成交概率模型；集合竞价不撮合；涨跌停/停牌不可成交</li>
+    <li><strong>成本：</strong>逐笔扣除佣金（含最低 5 元）、印花税、过户费、经手费与滑点</li>
+    <li><strong>事件日历：</strong>point-in-time，仅使用当时已公开信息，禁止事后标注</li>
+   </ul></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>4.3 核心评估指标</h3>
+  <div class="tw"><table>
+   <thead><tr><th>类别</th><th>指标</th><th>说明</th></tr></thead>
+   <tbody>
+    <tr><td class="k">收益</td><td>做 T 净收益（元 / 占底仓市值 %）、日均与年化做 T 收益率、相对「持有不动」的超额收益</td><td>主口径，须与底仓自身涨跌分离</td></tr>
+    <tr><td class="k">风险</td><td>做 T 收益最大回撤、日收益波动率、单日最大亏损、下行偏度、尾部损失（CVaR 5%）</td><td>以底仓市值为分母</td></tr>
+    <tr><td class="k">风险调整</td><td>夏普（日频）、Sortino、Calmar、Profit Factor、胜率、平均盈亏比、期望值/笔</td><td>净利润已扣全部成本</td></tr>
+    <tr><td class="k">交易质量</td><td>交易次数/日、平均持仓 5min 根数、<strong>成本占毛利比</strong>、滑点敏感度、成交率</td><td>成本占毛利是做 T 策略的生死线</td></tr>
+    <tr><td class="k">执行合规</td><td>底仓不变违规次数、事件日误交易次数、参与率超限次数、强平失败次数</td><td>任一显著 &gt; 0 即判引擎或规则有缺陷</td></tr>
+    <tr><td class="k">归因</td><td>分时段 / 正向 T vs 反向 T / 分振幅档 / 分大盘状态 的收益贡献</td><td>检验收益是否过度集中</td></tr>
+   </tbody>
+  </table></div>
+  <h4>先验决策门槛（写死在评估前，防事后调参）</h4>
+  <div class="pill-row">
+   <div class="pill">OOS 净做 T 收益 <b>&gt; 0</b></div>
+   <div class="pill">成本占毛利 <b>&lt; 35%</b></div>
+   <div class="pill">Profit Factor <b>&gt; 1.3</b></div>
+   <div class="pill">胜率 <b>&gt; 50%</b></div>
+   <div class="pill">最大回撤 <b>&lt; 1.5%</b>（底仓口径）</div>
+   <div class="pill">前 5 大盈利日贡献 <b>&lt; 40%</b></div>
+   <div class="pill">显著优于随机回转基准 <b>p &lt; 0.05</b></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>4.4 稳健性检验矩阵</h3>
+  <div class="tw"><table>
+   <thead><tr><th>#</th><th>检验</th><th>扫描设置</th><th>判定标准</th></tr></thead>
+   <tbody>
+    <tr><td class="num">1</td><td class="k">参数敏感性 / 参数高原</td><td>k ∈ {1.0, 1.5, 2.0}；止盈 {0.6, 0.8, 1.0}%；止损 {0.4, 0.6, 0.8}%；σ 窗口 {12, 20, 30}</td><td>存在连续正收益的参数区，而非孤立尖峰</td></tr>
+    <tr><td class="num">2</td><td class="k">成本压力测试</td><td>往返成本 ×{1, 1.5, 2, 3}；滑点 {1, 2, 3} tick</td><td>求「盈亏平衡成本倍数」，需 ≥ 1.5×</td></tr>
+    <tr><td class="num">3</td><td class="k">成交概率压力</td><td>限价成交率 {100%, 80%, 60%}</td><td>60% 下净收益不转负，或明确标注不可实盘</td></tr>
+    <tr><td class="num">4</td><td class="k">Walk-forward 滚动前推</td><td>3 个月窗口滚动重新标定，前向测试下 3 个月</td><td>OOS 表现与 IS 差异在可接受范围</td></tr>
+    <tr><td class="num">5</td><td class="k">子样本分层</td><td>按日振幅 &lt;2.67% / 2.67–3.88% / &gt;3.88% 分档；按大盘涨跌日；事件日剔除前后对比</td><td>收益应主要来自高波动档，低波动档不应贡献主要亏损</td></tr>
+    <tr><td class="num">6</td><td class="k">随机基准 / 蒙特卡洛</td><td>每日随机时点等量回转 1,000 次</td><td>策略显著优于随机（p &lt; 0.05），证明信号含信息</td></tr>
+    <tr><td class="num">7</td><td class="k">极端日剔除</td><td>剔除收益最高/最低各 5 个交易日后重估</td><td>结论方向不翻转</td></tr>
+    <tr><td class="num">8</td><td class="k">未来函数专项检查</td><td>信号滞后 1 根、VWAP 只用已实现值、事件 point-in-time、复权前视检查</td><td>零违规</td></tr>
+    <tr><td class="num">9</td><td class="k">过拟合度量</td><td>参数数量 vs 样本量、Deflated Sharpe Ratio（可选）</td><td>DSR 显著为正</td></tr>
+    <tr><td class="num">10</td><td class="k">基准策略对照</td><td>「买入持有」「固定时点回转」「无成本下限版」「无时段过滤版」</td><td>证明成本下限与时段过滤各自带来增量</td></tr>
+   </tbody>
+  </table></div>
+  <div class="callout"><b>消融实验（第 10 项）最关键：</b>必须单独跑「去掉 0.591% 成本下限」与「去掉时段过滤」两个变体。若二者净收益显著劣于完整版，才能证明本方案的核心设计有效；若无差异，说明阈值是冗余的，应简化策略。</div>
+ </div>
+</section>
+
+<!-- ============ 5 结论 ============ -->
+<section>
+ <div class="sec-head"><div class="sec-num">5</div><h2>研究结论、局限与后续步骤</h2></div>
+ <div class="grid g2">
+  <div class="card accent">
+   <h3>核心结论（3 句）</h3>
+   <p><strong>① 该股具备做 T 的波动与容量基础：</strong>近 21 日日均振幅 3.338%、日均成交额 5.616 亿、盘口价差仅 1 tick，50 万以内资金的冲击成本可忽略。</p>
+   <p><strong>② 但波动高度集中在开盘：</strong>前 30 分钟占全天成交额 42.6%，5min 波动率从 0.453% 衰减到午后 0.124%，已低于 0.197% 的往返成本 —— <strong>不加时段过滤与成本下限的日内做 T 在结构上必亏</strong>。</p>
+   <p><strong>③ 因此方案采用</strong>「VWAP 偏离均值回归 + 量能确认 + 仅主窗口交易 + 单笔目标价差 ≥ 3 倍成本 + 收盘底仓归零」的框架，并把事件日历与大盘过滤设为硬约束。</p>
+   <div class="callout green"><b>可信度：</b>日频特征（波动/流动性）置信度高（243 日全样本）；日内时段与 σ 结构置信度中等（10 日 5min 样本）；滑点/成交概率置信度低（无 Level2）。<b>所有阈值均为待回测检验的假设，不是可直接实盘的结论。</b></div>
+  </div>
+  <div class="card">
+   <h3>局限与待办</h3>
+   <ul>
+    <li><span class="tag t-no">阻塞</span> 补齐全样本 5min/1min 数据（约 11,664 根），否则无法正式回测</li>
+    <li><span class="tag t-no">阻塞</span> 补齐 point-in-time 完整事件日历与除权除息表</li>
+    <li><span class="tag t-mid">校准</span> 用券商 Level2 校准真实滑点、盘口深度与成交概率</li>
+    <li><span class="tag t-mid">校准</span> 核对佣金、印花税、过户费等费率与最新交易规则</li>
+    <li><span class="tag t-mid">确认</span> 底仓股数/成本价、是否摊薄成本、是否允许融券</li>
+    <li><span class="tag t-info">执行</span> 按 4.2 实现回测引擎 → 4.3 指标 → 4.4 稳健性矩阵 → 消融实验</li>
+   </ul>
+   <h4>建议的执行顺序</h4>
+   <div class="flow"><div class="step">补数据</div><span class="arw">→</span><div class="step">建事件日历</div><span class="arw">→</span><div class="step">回测引擎</div><span class="arw">→</span><div class="step">基准/消融</div><span class="arw">→</span><div class="step">稳健性</div><span class="arw">→</span><div class="step">模拟盘校准</div></div>
+  </div>
+ </div>
+</section>
+
+<div class="foot">
+ <p><strong>元信息</strong> · 分析时间 2026-11-17 08:38 GMT+8 · 数据截止 2026-11-16 收盘 · 标的 601058.SH 赛轮轮胎 · 策略类型：VWAP 偏离均值回归 / 日内双向做 T · 数据来源：万得金融数据（日K 243 日、5min K线 480 根、行情快照、上证日频 21 日、公司公告 8 条、财经新闻 8 条）</p>
+ <p>使用接口：日/分钟 K 线、行情指标快照、指数 K 线、公司公告、财经新闻；因套餐 QPS 限流采用串行低频取数；Level2 逐笔与十档委托不可得，已按降级口径处理并标注。</p>
+ <p style="margin-top:10px;color:#ffc766"><strong>免责声明：</strong>本文仅为策略研究方法设计与数据特征研究，不构成任何投资建议、要约或收益承诺。所有阈值、成本、费率均为研究假设，未经回测与实盘验证。股市有风险，投资需谨慎；历史数据与技术模型不保证未来表现。使用者应自行核对数据、规则与合规要求，并独立承担决策后果。</p>
+</div>
+
+</div>
+
+<script>
+(function(){
+ var noEcharts = (typeof echarts === 'undefined');
+ if(noEcharts){
+   document.querySelectorAll('.chart').forEach(function(c){c.style.display='none';});
+   document.querySelectorAll('.chart-fallback').forEach(function(f){f.style.display='block';});
+   return;
+ }
+ var axis={axisLine:{lineStyle:{color:'#3a3a58'}},axisLabel:{color:'#94a3b8',fontSize:10},splitLine:{lineStyle:{color:'rgba(45,45,68,.7)'}}};
+ var tip={backgroundColor:'#20203a',borderColor:'#3a3a58',textStyle:{color:'#e2e8f0',fontSize:12}};
+ var dates=['10-19','10-20','10-21','10-22','10-23','10-26','10-27','10-28','10-29','10-30','11-02','11-03','11-04','11-05','11-06','11-09','11-10','11-11','11-12','11-13','11-16'];
+ var amp=[3.880,3.158,1.770,3.215,4.595,4.619,3.287,2.949,3.203,2.672,5.018,5.717,3.005,4.807,3.339,3.499,2.165,1.626,1.873,3.426,2.269];
+ var amt=[2.747,4.181,2.835,4.948,5.472,7.199,5.580,5.047,4.586,4.353,9.079,10.742,6.537,12.602,7.404,5.090,5.863,3.099,3.524,3.780,3.257];
+ var close=[12.63,12.36,12.37,12.10,12.18,11.72,11.49,11.44,11.66,11.66,11.46,12.16,11.97,12.75,12.52,12.18,12.41,12.29,12.25,12.25,12.32];
+
+ var c1=echarts.init(document.getElementById('chart-amp'));
+ c1.setOption({backgroundColor:'transparent',tooltip:{trigger:'axis',...tip},
+  legend:{data:['日振幅 %','成交额 亿'],textStyle:{color:'#94a3b8',fontSize:11},top:0},
+  grid:{left:44,right:46,top:34,bottom:36},
+  xAxis:{type:'category',data:dates,...axis,axisLabel:{color:'#94a3b8',fontSize:9,rotate:45}},
+  yAxis:[{type:'value',name:'振幅 %',nameTextStyle:{color:'#94a3b8',fontSize:10},...axis},
+         {type:'value',name:'亿元',nameTextStyle:{color:'#94a3b8',fontSize:10},...axis,splitLine:{show:false}}],
+  series:[{name:'日振幅 %',type:'bar',data:amp,itemStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#667eea'},{offset:1,color:'#764ba2'}]),borderRadius:[3,3,0,0]},
+    markLine:{symbol:'none',data:[{yAxis:3.338,name:'均值',label:{color:'#ffa502',fontSize:10}}],lineStyle:{color:'#ffa502',type:'dashed'}}},
+   {name:'成交额 亿',type:'line',yAxisIndex:1,data:amt,smooth:true,symbol:'none',lineStyle:{color:'#00d4aa',width:2}}]
+ });
+
+ var c2=echarts.init(document.getElementById('chart-seg'));
+ c2.setOption({backgroundColor:'transparent',tooltip:{trigger:'item',...tip,formatter:'{b}: {c}% 的成交额'},
+  title:{text:'11-16 日内成交额分布',left:'center',top:0,textStyle:{color:'#e2e8f0',fontSize:13,fontWeight:600}},
+  legend:{bottom:0,textStyle:{color:'#94a3b8',fontSize:10}},
+  series:[{type:'pie',radius:['38%','62%'],center:['50%','52%'],avoidLabelOverlap:true,
+   itemStyle:{borderColor:'#1a1a2e',borderWidth:2},
+   label:{color:'#e2e8f0',fontSize:11,formatter:'{b}\n{c}%'},
+   data:[{value:42.60,name:'09:30-10:00',itemStyle:{color:'#667eea'}},
+         {value:26.47,name:'10:00-11:30',itemStyle:{color:'#38bdf8'}},
+         {value:18.86,name:'13:00-14:30',itemStyle:{color:'#764ba2'}},
+         {value:12.06,name:'14:30-15:00',itemStyle:{color:'#00d4aa'}}]}]});
+
+ var c3=echarts.init(document.getElementById('chart-sigma'));
+ c3.setOption({backgroundColor:'transparent',tooltip:{trigger:'axis',...tip},
+  title:{text:'分时段 5min 波动率 vs 往返成本',left:'center',top:0,textStyle:{color:'#e2e8f0',fontSize:13,fontWeight:600}},
+  legend:{bottom:0,textStyle:{color:'#94a3b8',fontSize:10},data:['5min σ %']},
+  grid:{left:48,right:20,top:40,bottom:52},
+  xAxis:{type:'category',data:['开盘\n09:30-10:00','上午\n10:00-11:30','午后\n13:00-14:30','尾盘\n14:30-15:00'],...axis,axisLabel:{color:'#94a3b8',fontSize:10,lineHeight:13}},
+  yAxis:{type:'value',name:'%',nameTextStyle:{color:'#94a3b8',fontSize:10},...axis},
+  series:[{name:'5min σ %',type:'bar',barWidth:'48%',
+   data:[{value:0.4532,itemStyle:{color:'#00d4aa'}},{value:0.1454,itemStyle:{color:'#ff4757'}},
+         {value:0.1244,itemStyle:{color:'#ff4757'}},{value:0.1118,itemStyle:{color:'#ff4757'}}],
+   label:{show:true,position:'top',color:'#e2e8f0',fontSize:10,formatter:'{c}%'},
+   markLine:{symbol:'none',data:[
+     {yAxis:0.1969,name:'基准成本 0.197%',lineStyle:{color:'#ffa502',type:'dashed',width:2},label:{color:'#ffa502',fontSize:10,position:'insideEndTop',formatter:'基准成本 0.197%'}},
+     {yAxis:0.591,name:'最小目标 0.591%',lineStyle:{color:'#38bdf8',type:'dotted'},label:{color:'#38bdf8',fontSize:10,position:'insideEndTop',formatter:'3×成本下限 0.591%'}}]}
+  }]
+ });
+
+ window.addEventListener('resize',function(){c1.resize();c2.resize();c3.resize();});
+})();
+</script>
+</body>
+</html>

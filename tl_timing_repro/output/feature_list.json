@@ -1,0 +1,33 @@
+{
+  "n_features": 27,
+  "columns": [
+    "ret_1",
+    "ret_5",
+    "ret_10",
+    "ret_20",
+    "ma_bias_5",
+    "ma_bias_10",
+    "ma_bias_20",
+    "rsi_14",
+    "close_position",
+    "gap",
+    "volume_chg_5",
+    "momentum_accel",
+    "skew_20",
+    "volume_ma_bias_20",
+    "M1006337",
+    "M0041652",
+    "M1006337_chg_5",
+    "M0041652_chg_5",
+    "S5914515_chg_5",
+    "S0114089_chg_5",
+    "M1006337_chg_20",
+    "M0041652_chg_20",
+    "S5914515_chg_20",
+    "S0114089_chg_20",
+    "dr007_r001_spread",
+    "dr007_ma_bias_20",
+    "log_M1006337"
+  ],
+  "note": "技术面因子段内各自构造；EDB 因子按交易日 ffill 对齐"
+}

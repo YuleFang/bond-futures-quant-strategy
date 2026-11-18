@@ -1,0 +1,21 @@
+{
+  "sample_start": "2024-05-14",
+  "sample_end": "2025-05-14",
+  "n_trading_days": 243,
+  "cumulative_return": 0.14668445857456325,
+  "annual_return": 0.1525122582806515,
+  "annual_volatility": 0.07744206648281099,
+  "sharpe": 1.8720226726230467,
+  "max_drawdown": 0.05276458362234615,
+  "win_rate": 0.6666666666666666,
+  "n_trades": 6,
+  "benchmark_cumulative_return": 0.12866881272486252,
+  "cost_assumption": {
+    "commission": 0.0,
+    "slippage": 0.0,
+    "impact": 0.0
+  },
+  "rf": 0.0,
+  "annual_factor": 252,
+  "win_rate_denominator": "closed_trades"
+}
